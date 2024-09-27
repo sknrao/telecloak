@@ -1,0 +1,4 @@
+minio
+spacy==3.7.1
+presidio-analyzer 
+presidio-anonymizer
