@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thoth</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/thoth.jpg') }}">
+</head>
+
+<body>
+    <section>
+        <header>
+            <ul>
+                <!-- <li>
+                    <a href="">Gmail</a>
+                </li>
+                <li>
+                    <a href="">Images</a>
+                </li> -->
+                <li>
+                    <a href=""><img src="../static/images/menuIcon.png" alt=""></a>
+                </li>
+                <li>
+                    <!-- <button>Sign In</button> -->
+                     <img src="../static/images/telecloak.png" alt="" id="logo">
+                </li>
+            </ul>
+        </header>
+
+        <div class="main">
+            <img src="../static/images/thoth.jpg" alt="">
+            <div class="searchBox">
+                <input type="text" class="search" id="searchInput" placeholder="Type your file path here...">
+                <div class="icons">
+                    <div>
+                        <img src="../static/images/search.png" alt="">
+                    </div>
+                    <div class="miclens">
+                        <img src="../static/images/tele.png" alt="" height="33" >
+                        <img src="../static/images/data.png" alt="" height="33">
+                        <img src="../static/images/anon.png" alt="" height="33">
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="runButton">Anonymize</button>
+                <a href="http://10.200.106.49:9001/browser/output" target="blank"><button id="hiddenButton">View Anonymized Data</button></a>
+            </div>
+            <div id="result"></div>
+        </div>
+        <div class="footer">
+            <div class="row row1">
+                <p class="country">India</p>
+            </div>
+            <div class="row row2">
+                <ul>
+                    <li><a href="">About</a></li>
+                    <li><a href="">Advertising</a></li>
+                    <li><a href="">Business</a></li>
+                    <li><a href="">How Anonymization works</a></li>
+
+
+                </ul>
+                <ul>
+                    <li><a href="">Privacy</a></li>
+                    <li><a href="">Terms</a></li>
+                    <li><a href="">Settings</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <script>
+        function executeSearch() {
+            const searchText = document.getElementById("searchInput").value;
+    
+            fetch('/run_function', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ search: searchText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerText = data.result;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    
+        // Trigger search on button click
+        document.getElementById("runButton").onclick = function() {
+            alert("Anonymization may take some time, Please be patient");
+            executeSearch();
+        };
+    
+        // Trigger search on Enter key press
+        document.getElementById("searchInput").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                executeSearch();
+            }
+        });
+
+        const hiddenButton = document.getElementById('hiddenButton');
+
+        // Add an event listener to showButton
+        document.getElementById('runButton').addEventListener('click', function() {
+        hiddenButton.style.display = 'inline';  // Show the hidden button when clicked
+        });
+
+        document.getElementById("searchInput").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                hiddenButton.style.display = 'inline';
+            }
+        });
+    </script>
+    
+</body>
+
+</html>
