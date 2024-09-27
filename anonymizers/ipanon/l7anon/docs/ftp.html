@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>ftp</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">ftp</font></h1>
+<p>
+This module is intendend to perform ftp-data anonymization
+of both command and data channels.
+</p><p>
+In addition the program can be launched as a command line utility.
+</p>
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr><td>None</td></tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#process_ftp">process_ftp</a></td>
+<td>process_http(src)</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="process_ftp" ID="process_ftp"></a>
+<h2><font color="#0000FF">process_ftp</font></h2>
+<b>process_ftp</b>(<i>src</i>)
+<p>
+    process_http(src)
+</p><p>
+    This function handles ftp control streams. Basically it fakes sensible info
+    in commands and replies while looking for data connections.
+</p><p>
+    src : source data. Either an already opened file or a string.
+</p><p>
+    Returns the processed stream within a string and a list of (host, port).
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

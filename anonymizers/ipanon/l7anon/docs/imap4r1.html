@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>imap4r1</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">imap4r1</font></h1>
+<p>
+This module is intendend to perform imap4rev1-data anonymization.
+</p><p>
+In addition the program can be launched as a command line utility.
+</p>
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr><td>None</td></tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#process_imap4">process_imap4</a></td>
+<td>process_imap4(src)</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="process_imap4" ID="process_imap4"></a>
+<h2><font color="#0000FF">process_imap4</font></h2>
+<b>process_imap4</b>(<i>src</i>)
+<p>
+    process_imap4(src)
+</p><p>
+    This function handles imap4 streams. Basically it fakes sensible data
+    in FETCH commands and no more than this.
+</p><p>
+    src : source data. Either an already opened file or a string.
+</p><p>
+    Returns the processed stream within a string.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

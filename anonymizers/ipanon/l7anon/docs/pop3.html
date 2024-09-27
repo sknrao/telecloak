@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>pop3</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">pop3</font></h1>
+<p>
+This module is intendend to perform pop3-data anonymization.
+</p><p>
+In addition the program can be launched as a command line utility.
+</p>
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr><td>None</td></tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#process_pop3">process_pop3</a></td>
+<td>process_pop3(src)</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="process_pop3" ID="process_pop3"></a>
+<h2><font color="#0000FF">process_pop3</font></h2>
+<b>process_pop3</b>(<i>src</i>)
+<p>
+    process_pop3(src)
+</p><p>
+    This function handles pop3 streams. Basically it fakes sensible data
+    in commands and replies and hides contents where there are no human
+    readable messages.
+</p><p>
+    src : source data. Either an already opened file or a string.
+</p><p>
+    Returns the processed stream within a string.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

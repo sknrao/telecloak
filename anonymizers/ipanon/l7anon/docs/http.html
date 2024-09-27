@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>http</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">http</font></h1>
+<p>
+This module is intendend to perform http-data anonymization.
+</p><p>
+In addition the program can be launched as a command line utility.
+</p>
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr>
+<td><a href="#EmptyConfig">EmptyConfig</a></td>
+<td>Raised when there's no file to read.</td>
+</tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#process_http">process_http</a></td>
+<td>process_http(src)</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="EmptyConfig" ID="EmptyConfig"></a>
+<h2><font color="#0000FF">EmptyConfig</font></h2>
+<p>
+Raised when there's no file to read.
+</p>
+<h3><font color="#FF0000">Derived from</font></h3>
+ConfigParser.Error
+<h3><font color="#FF0000">Methods</font></h3>
+<table>
+<tr>
+<td><a href="#EmptyConfig.__init__">EmptyConfig</a></td>
+<td></td>
+</tr>
+</table>
+<p><a NAME="EmptyConfig.__init__" ID="EmptyConfig__init__"></a>
+<h3><font color="#0000FF">EmptyConfig (Constructor)</font></h3>
+<b>EmptyConfig</b>(<i>config_file</i>)
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="process_http" ID="process_http"></a>
+<h2><font color="#0000FF">process_http</font></h2>
+<b>process_http</b>(<i>src, config_file='tcpanon.config', verbose=False</i>)
+<p>
+    process_http(src)
+</p><p>
+    This function handles http streams. Basically it fakes sensible info
+    in commands and replies and hides contents.
+</p><p>
+    src : source data. Either an already opened file or a string.
+</p><p>
+    Returns the processed stream within a string.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

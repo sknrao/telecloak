@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>string_plus</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">string_plus</font></h1>
+<p>
+Enhancements to the standard string library to suit
+TCP anonymization needs.
+</p>
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr><td>None</td></tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#anon_bd">anon_bd</a></td>
+<td>anon_bd(astring, delimiters[, with_char])</td>
+</tr><tr>
+<td><a href="#anonymize">anonymize</a></td>
+<td>anonymize(astring[, with_char[,shorten]])</td>
+</tr><tr>
+<td><a href="#anonymize_line">anonymize_line</a></td>
+<td>anonymize(aline[, with_char[,end_of_line]])</td>
+</tr><tr>
+<td><a href="#ftp_data_port">ftp_data_port</a></td>
+<td>ftp_data_port(astring)</td>
+</tr><tr>
+<td><a href="#startswith">startswith</a></td>
+<td>startswith(astring, prefix)</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="anon_bd" ID="anon_bd"></a>
+<h2><font color="#0000FF">anon_bd</font></h2>
+<b>anon_bd</b>(<i>astring, delimiters, with_char='x'</i>)
+<p>
+    anon_bd(astring, delimiters[, with_char])
+</p><p>
+    ANONymize Between Delimiters
+</p><p>
+    astring     : string to analyze
+    delimiters  : list (or tuple) of pairs of delimiters
+    [with_char] : character to rewrite with
+</p><p>
+    Example:
+        anon_bd("MAIL-TO Gianni (l'ottimista) <example@123.com>", [('<','>'),('(',')')], 'u')
+        'MAIL-TO Gianni (uuuuuuuuuuu) <uuuuuuuuuuuuuuu>'
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="anonymize" ID="anonymize"></a>
+<h2><font color="#0000FF">anonymize</font></h2>
+<b>anonymize</b>(<i>astring, with_char='x', shorten=0</i>)
+<p>
+    anonymize(astring[, with_char[,shorten]])
+</p><p>
+    Examples:
+        anonymize('hello')
+        'xxxxx'
+        anonymize('hello', '0', 2)
+        '000'
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="anonymize_line" ID="anonymize_line"></a>
+<h2><font color="#0000FF">anonymize_line</font></h2>
+<b>anonymize_line</b>(<i>aline, with_char='x', end_of_line=''</i>)
+<p>
+    anonymize(aline[, with_char[,end_of_line]])
+</p><p>
+    Examples:
+        anonymize_line('hello\r\n')
+        'xxxxx\r\n'
+        anonymize_line('hello\r\n', '0', end_of_line='\r')
+        '00000\r'
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="ftp_data_port" ID="ftp_data_port"></a>
+<h2><font color="#0000FF">ftp_data_port</font></h2>
+<b>ftp_data_port</b>(<i>astring</i>)
+<p>
+    ftp_data_port(astring)
+</p><p>
+    This function returns (host, port) from a string 
+    "h1, h2, h3, h4, p1, p2"
+    where h1 is the high order 8 bits of the internet host address
+    and p1 is the high order 8 bits of the port.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="startswith" ID="startswith"></a>
+<h2><font color="#0000FF">startswith</font></h2>
+<b>startswith</b>(<i>astring, prefix</i>)
+<p>
+    startswith(astring, prefix)
+</p><p>
+    astring     : string to analyze
+    prefix      : prefix tuple/list
+</p><p>
+    NOTE:
+        This function's been written to ensure a lighter matching definition layout
+        within the tasks, exactly like Python 2.5 allows, but still operating with
+        older versions of Python.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>smtp</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">smtp</font></h1>
+<p>
+This module is intendend to perform smtp-data anonymization:
+look at process_smtp first.
+</p><p>
+In addition the program can be launched as a command line utility.
+</p>
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr><td>None</td></tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#anon_reply_cmd">anon_reply_cmd</a></td>
+<td>anon_reply_cmd(line, reply_pattern) NOTE: server_name and server_anon are also needed in a reachable scope.</td>
+</tr><tr>
+<td><a href="#process_smtp">process_smtp</a></td>
+<td>process_smtp(src)</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="anon_reply_cmd" ID="anon_reply_cmd"></a>
+<h2><font color="#0000FF">anon_reply_cmd</font></h2>
+<b>anon_reply_cmd</b>(<i>line, reply_pattern</i>)
+<p>
+    anon_reply_cmd(line, reply_pattern)
+    NOTE: server_name and server_anon are also needed in a reachable scope.
+</p><p>
+    This function is called to anonymize replies and commands.
+</p><p>
+    Smtp replies consist of a 3 digit number eventually followed
+    by human readable text. A dash after the 3 digit number denotes
+    a multiline reply.
+</p><p>
+    Smtp commands list is well known: EHLO, HELO, MAIL, RCPT, DATA,
+    RSET, VRFY, EXPN, HELP, NOOP and QUIT.
+</p><p>
+    The purpose is to hide data like <recipient> and [address].
+</p><p>
+
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="process_smtp" ID="process_smtp"></a>
+<h2><font color="#0000FF">process_smtp</font></h2>
+<b>process_smtp</b>(<i>src</i>)
+<p>
+    process_smtp(src)
+</p><p>
+    This function handles smtp streams. Basically it hides contents
+    issued between "DATA" and "." commands and then relies on anon_reply_cmd.
+</p><p>
+    src : source data. Either an already opened file or a string.
+</p><p>
+    Returns the processed stream within a string.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

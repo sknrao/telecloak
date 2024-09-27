@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>tcp_reassembly</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">tcp_reassembly</font></h1>
+<p>
+This module provides the functionality of stream reassembly.
+</p><p>
+The input SHOULD be a pcap dump file relative to just one stream:
+alternatively it's up to the user to pass the correct pcap_filter
+string in order to filter out the one stream needed.
+</p><p>
+In addition the program can be launched as a command line utility.
+</p>
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr><td>None</td></tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#log_data">log_data</a></td>
+<td>log_data(write_dir, data, src, sport, dst, dport)</td>
+</tr><tr>
+<td><a href="#tcp_reassembly">tcp_reassembly</a></td>
+<td>tcp_reassembly(source_dump_file[, pcap_filter])</td>
+</tr><tr>
+<td><a href="#tcp_todo">tcp_todo</a></td>
+<td>tcp_todo(half_stream_data, verbose)</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="log_data" ID="log_data"></a>
+<h2><font color="#0000FF">log_data</font></h2>
+<b>log_data</b>(<i>write_dir, data, src, sport, dst, dport, counter=-1</i>)
+<p>
+    log_data(write_dir, data, src, sport, dst, dport)
+</p><p>
+    This function logs out data into files when the module
+    is working as command line utility.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="tcp_reassembly" ID="tcp_reassembly"></a>
+<h2><font color="#0000FF">tcp_reassembly</font></h2>
+<b>tcp_reassembly</b>(<i>source_dump_file, pcap_filter=None, log=False, verbose=False</i>)
+<p>
+    tcp_reassembly(source_dump_file[, pcap_filter])
+</p><p>
+    pcap_filter : data input filter in tcpdump format
+        for example pcap_filter = "tcp and port 80"
+</p><p>
+    This function sets up the tcp reassembly task.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="tcp_todo" ID="tcp_todo"></a>
+<h2><font color="#0000FF">tcp_todo</font></h2>
+<b>tcp_todo</b>(<i>half_stream_data, verbose</i>)
+<p>
+    tcp_todo(half_stream_data, verbose)
+</p><p>
+    half_stream_data: list of tuples (seq, data, SYN, FIN)
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

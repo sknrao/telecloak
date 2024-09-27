@@ -1,0 +1,35 @@
+BASIC USAGE
+
+To start using tcpanon, just run:
+
+   	 ./tcpanon.py infile
+
+where "infile" is the input file (in PCAP format) containing the trace to
+anonymize.  The output is a PCAP file ("infile.anon" by default) with the
+packet payloads fully anonymized.  
+
+Run
+
+	./tcpanon.py -h
+
+for the complete set of options.
+
+If no other options are specified, the program obfuscates the following
+clear-text protocols: HTTP, SMTP, POP3, IMAP4, FTP, FTP-data. Instructions to
+anonymize other protocols can be easily added as external modules (or classes).
+
+The user can specify the anonymization level of each application protocol by
+editing the configuration file "tcpanon.config". Given a clear-text application
+protocol, the config file allows the user to: 
+
+- Keep fields not anonymized. For instance, the instruction "Host: ALL" applied
+to 'Host: 192.168.1.1' gives 'Host: 192.168.1.1'
+
+- Erase only the sensitive information about the host, and leave the name of
+fields in clear text. The instruction "Host: TAG" applied to 'Host:
+192.168.1.1' gives 'Host: xxxxxxxxxxx' 
+
+- Blindly remove all the payload information. The instruction "Host: NONE"
+applied to 'Host: 192.168.1.1' gives 'xxxxxxxxxxxxxxxxx'
+
+

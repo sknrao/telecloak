@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'
+'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+<html><head>
+<title>tcpanon</title>
+</head>
+<body bgcolor="#FFFFFF"><a NAME="top" ID="top"></a>
+<h1><font color="#0000FF">tcpanon</font></h1>
+
+<p><i>tcpanon</i> is a TCP trace anonymizer written in Python.  Referring to
+the TCP/IP stack, what's new is the capability to work at level 7: the TCP
+stream of each flow in a traffic trace is first interpreted and reassembled at
+the application layer. Then, sensitive information, according to the rules set
+in a configuration file, are either erased or camouflaged. The current version
+works with some of the most common "clear text" protocols: HTTP, SMTP, POP3,
+IMAP4, FTP, FTP-data, but it can be easily extended to other protocols.</p>
+
+<h3>Contact information</h3>
+
+<p>For more information, contact <a href="http://www.ing.unibs.it/~salga">Luca
+Salgarelli</a>.</p>
+
+<h3>License</h3>
+<p>tcpanon is distributed under the classical <a
+href="http://www.opensource.org/licenses/bsd-license.php">BSD
+license</a>. Please see also the LICENSE.txt file, which should have come along
+with this software.</p>
+
+
+<h3>Basic usage information</h3>
+
+<p>To start using tcpanon, just run:</p>
+
+   	 <p><code>./tcpanon.py infile</code></p>
+
+<p>where "infile" is the input file (in PCAP format) containing the trace to
+anonymize.  The output is a PCAP file ("infile.anon" by default) with the
+packet payloads fully anonymized.</p>
+
+<p>Run</p>
+
+	<p><code>./tcpanon.py -h</code></p>
+
+<p>for the complete set of options.</p>
+
+<p>If no other options are specified, the program obfuscates the following
+clear-text protocols: HTTP, SMTP, POP3, IMAP4, FTP, FTP-data. Instructions to
+anonymize other protocols can be easily added as external modules (or
+classes).</p>
+
+<p>The user can specify the anonymization level of each application protocol by
+editing the configuration file "tcpanon.config". Given a clear-text application
+protocol, the config file allows the user to:</p>
+
+<ul>
+
+  <li>Keep fields not anonymized. For instance, the instruction "Host: ALL"
+  applied to 'Host: 192.168.1.1' gives 'Host: 192.168.1.1'</li>
+
+  <li>Erase only the sensitive information about the host, and leave the name of
+  fields in clear text. The instruction "Host: TAG" applied to 'Host:
+  192.168.1.1' gives 'Host: xxxxxxxxxxx'</li>
+
+  <li>Blindly remove all the payload information. The instruction "Host: NONE"
+  applied to 'Host: 192.168.1.1' gives 'xxxxxxxxxxxxxxxxx'</li>
+
+</ul>
+
+<h2>Source code documentation</h2>
+
+<h3><font color="#FF0000">Classes</font></h3>
+<table>
+<tr>
+<td><a href="#flow_object">flow_object</a></td>
+<td>We construct python objects to work with after parsing XML report.</td>
+</tr>
+</table>
+<h3><font color="#FF0000">Functions</font></h3>
+<table>
+<tr>
+<td><a href="#anon_flow">anon_flow</a></td>
+<td>anon_flow(in_filename, out_obj, bcli, bsrv, acli, asrv)</td>
+</tr><tr>
+<td><a href="#find_ftp_data_streams">find_ftp_data_streams</a></td>
+<td>find_ftp_data_streams(all_flows_obj, curr_flow, host, port)</td>
+</tr><tr>
+<td><a href="#hide_or_discard_tcp_data">hide_or_discard_tcp_data</a></td>
+<td>anonpkt = hide_or_discard_tcp_data(pkt, keepsize=False)</td>
+</tr><tr>
+<td><a href="#main">main</a></td>
+<td>This is the core of tcpanon.</td>
+</tr>
+</table>
+<hr /><hr />
+<a NAME="flow_object" ID="flow_object"></a>
+<h2><font color="#0000FF">flow_object</font></h2>
+<p>
+    We construct python objects to work with after parsing XML report.
+</p><p>
+    A flow object has several attributes:
+        src         : source ip address (i.e. client)
+        dst         : destination ip address (i.e. server)
+        sport       : source port
+        dport       : destination port
+        flow_number : numerical identifier
+        start_time  : timestamp of the first packet
+        end_time    : timestamp of the last packet
+        packets     : list of packets number composing the flow
+        analyzed    : True/False flag
+</p><p>
+    Recording start_time and end_time it's useful while processing nested flows.
+</p>
+<h3><font color="#FF0000">Derived from</font></h3>
+None
+<h3><font color="#FF0000">Methods</font></h3>
+<table>
+<tr>
+<td><a href="#flow_object.__init__">flow_object</a></td>
+<td></td>
+</tr>
+</table>
+<p><a NAME="flow_object.__init__" ID="flow_object__init__"></a>
+<h3><font color="#0000FF">flow_object (Constructor)</font></h3>
+<b>flow_object</b>(<i>xml_flow, counter</i>)
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="anon_flow" ID="anon_flow"></a>
+<h2><font color="#0000FF">anon_flow</font></h2>
+<b>anon_flow</b>(<i>in_filename, out_obj, bcli, bsrv, acli, asrv</i>)
+<p>
+    anon_flow(in_filename, out_obj, bcli, bsrv, acli, asrv)
+</p><p>
+    in_filename : input pcap filename
+    out_obj     : already opened pcap dump file
+    bcli        : original client data
+    bsrv        : original server data
+    acli        : anonymized client data
+    asrv        : anonymized client data
+</p><p>
+    This functions performs the sostitution of data into the packets.
+</p><p>
+    NOTE:
+        bcli, bsrv, acli, asrv carry in tcp data:
+            - b stands for before processing
+            - a stands for after processing
+            - cli and srv of course stand for client/server side
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="find_ftp_data_streams" ID="find_ftp_data_streams"></a>
+<h2><font color="#0000FF">find_ftp_data_streams</font></h2>
+<b>find_ftp_data_streams</b>(<i>all_flows_obj, curr_flow, host, port</i>)
+<p>
+    find_ftp_data_streams(all_flows_obj, curr_flow, host, port)
+</p><p>
+    all_flows_obj   : flow objects to scan through
+    curr_flow       : command connection flow_object
+    host            : data connection host
+    port            : data connection port
+</p><p>
+    This function looks for ftp-data connections which fit a command connection.
+    It returns a list of such objects.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="hide_or_discard_tcp_data" ID="hide_or_discard_tcp_data"></a>
+<h2><font color="#0000FF">hide_or_discard_tcp_data</font></h2>
+<b>hide_or_discard_tcp_data</b>(<i>pkt, keepsize=False</i>)
+<p>
+    anonpkt = hide_or_discard_tcp_data(pkt, keepsize=False)
+</p><p>
+    pkt         : packet in pcap format
+    keepsize    : when False tcp data is to be discarded,
+                  when True tcp data is to be hidden keeping size.
+</p><p>
+    This function discards or replaces, with zeros, tcp data from packets
+    returning the new packet after adjusting the checksum.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr /><hr />
+<a NAME="main" ID="main"></a>
+<h2><font color="#0000FF">main</font></h2>
+<b>main</b>(<i></i>)
+<p>
+    This is the core of tcpanon.
+    We like to divide it in 3 parts:
+        a. initial stuff (basically parameters setting)
+        b. main program
+        c. final stuff (close files, handle tmpdata and so)
+</p><p>
+    Step by step the main program (part b.) goes through:
+        1. flow analysis
+        2. XML parsing
+        3. source dumpfile slicing
+        4. TCP stream reassembly
+        5. stream anonymization
+        6. sorting and merging
+    and all in all each stage is thought with modularity in mind.
+</p>
+<div align="right"><a href="#top">Up</a></div>
+<hr />
+</body></html>

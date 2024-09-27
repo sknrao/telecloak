@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!-- Sample configuration file. Attributes 12 and 0 are part of the QID, attribute 41 is sensitive. k = 32-->
+<!-- Name attributes of 'att' nodes are not used, included just for reference.-->
+<config method = 'Datafly' k = '10'>
+	<input filename='dataset/census-income_1K.data' separator=','/> <!-- If left blank, separator will be set as comma by default.-->
+	<output filename='census-income_Anon.data' format ='genValsDist'/> <!-- Format options = {genVals, genValsDist, anatomy}. If left blank,
+	output format will be set as genVals by default.-->
+	<id> <!-- List of identifier attributes, if any, these will be excluded from the output -->
+		<att index='1' name='att1'/>
+		<att index='2' name='att2'/>
+	</id>
+	<qid>
+		<att index='12' name='sex'>
+			<map> <!-- Mapping of a categorical domain to a discrete-valued numeric domain.-->
+				<entry cat='Female' int='0' /> <!-- Make sure that (1) the order matches that of the depth-first traversel order 
+				(i.e., the left-most leaf gets the smallest value, right-most the largest) and (2) values start with 0 and are 
+				incremented by 1.-->
+				<entry cat='Male' int='1' />
+			</map>
+			<vgh value='[0:1]'> <!-- It is recommended that you omit the children that correspond to a category.-->
+			</vgh>
+		</att>
+		<att index='0' name ='age'>
+			<vgh value='[0:100)'>
+				<node value='[0:50)'>
+					<node value='[0:25)'/> <!-- No need to list the leaves, as the domain might be continuous.-->
+					<node value='[25:50)'/>
+				</node>
+				<node value='[50:100)'>
+					<node value='[50:75)'/>
+					<node value='[75:100)'/>
+				</node>
+			</vgh>
+		</att>
+	</qid>
+	<sens>
+		<att index='41' name='salary'>
+			<map>
+				<entry cat='-_50000.' int='1' />
+				<entry cat='50000+.' int='2' />
+			</map>
+		</att>
+	</sens>
+</config>

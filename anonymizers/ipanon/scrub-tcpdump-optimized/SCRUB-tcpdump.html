@@ -1,0 +1,390 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <title>SCRUB-tcpdump</title>
+          <style type="text/css">
+       p { text-align: left }
+    </style>
+  </head>
+
+  <body>
+  <p><a href="https://scrub-tcpdump.sourceforge.net/docs.php">Standard view</a></p>
+
+<h2>Documentation</h2>
+<ul>
+  <li><a href="#getsource">Getting the Source</a></li>
+  <li><a href="#usetool">Using the tool</a></li>
+</ul>
+<a name="getsource"></a>
+<h3>Getting the Source</h3>
+<p>
+In order to check out the code for the current version of the standalone program, you will want to
+grab an SVN client for your system (using the command-line version in Linux/Unix/Mac OS X is good
+enough, while <a href="http://tortoisesvn.tigris.org/">TortoiseSVN</a> is often used by people under
+Windows who do not wish to utilize a command-line client).  If you are using the command-line client
+then issue the command:<br><br>
+svn co https://scrub-tcpdump.svn.sourceforge.net/svnroot/scrub-tcpdump/trunk/scrubtcpdump scrub-tcpdump<br><br>
+This will pull the latest version of the source from the repository.  Alternatively, if you are using
+TortoiseSVN, then you can just check out a new repository into a directory from the same URL as above.
+</p>
+<p>
+Once the source has been pulled, you need a system with a C compiler (at the current time we only use C
+and not C++ to maintain compatibility with tcpdump).  The system has only been tested with variants of
+gcc and the make system.  It has been compiled on Mac OS X 10.4.10 using the native Xcode compiler and
+the bash prompt, and also in Linux and on Windows using the Cygwin environment.  In all cases, you will
+need to compile and install libpcap, which is available from the <a href="http://www.tcpdump.org/">tcpdump</a>
+website.  Build and install that first (if you prefer to use pre-built packages, use the one with the
+dev build from your available system) and then enter the directory to which you pulled the scrub-tcpdump
+source and simply issue the command 'make' there.  This should produce a binary called 'scrub-tcpdump'
+which you can then use to anonymize packet captures in libpcap format.
+</p>
+<hr>
+<a name="usetool"></a>
+<h3>Using the tool</h3>
+<p>To invoke the tool, one simply has to issue the following command:<br><br>
+scrub-tcpdump &lt;input&gt; &lt;output&gt; [options]<br>
+The following two options are required:<br>
+<table colspacing="10">
+    <tbody><tr><td style="padding-right: 10px">-r filename</td><td>file to be read, pcap format</td></tr>
+    <tr><td style="padding-right: 10px">-w filename</td><td>file to be output, pcap format</td></tr>
+    <tr><td colspan="2" style="padding-right: 10px">&nbsp;</td></tr>
+    <tr><td colspan="2" style="padding-right: 10px">The following are options:</td></tr>
+    <tr><td style="padding-right: 10px">-i device</td><td>pcap-style device name from which to capture packets</td></tr>
+    <tr><td style="padding-right: 10px">-o "anonymization sting"</td><td>string of anonymization options as explained in the next paragraph</td></tr>
+    <tr><td style="padding-right: 10px">-k permutation_key</td><td>optional permutation key, only necessary if using keyed randomization</td></tr>
+    <tr><td style="padding-right: 10px">-f BPF_filter_string</td><td>filter string for libpcap</td></tr>
+</tbody></table> 
+The source file needs to be a file in tcpdump/libpcap format, and in a version that is compatible with the
+version of libpcap against which you have built the tool.  The output file will be in libpcap format, also.
+<span style="color: black">WARNING:</span> The tool will silently over-write any existing file with the
+same name as the output file that you specify.
+</p>
+<p>
+The anonymization options string is composed
+of a number of options, in any order, selected from the tables below.  Its format follows the pattern of
+&lt;field function&gt; pairs, where the field is one of the designators from <a href="#table2">table 2</a>
+below and the function used to anonymize that field is from <a href="#table3">table 3</a> below.  They must
+be paired as per the accepted pairings in <a href="#table1">Table 1.</a>  Errors in pairings will be accepted
+by the system with undefined results.  An explanation of what each function means in the context of each field
+<a href="#followstable3">follows table 3</a>.  There will always be an even number
+of options in this string, the first indicating the field to be anonymized and the second the function to
+use in the anonymization process.  For example, to anonymize the source IP address with black marker and
+all the ports with bilateral classification the anonymization options string should look like:<br><br>
+"srcip bm tcpsrcport bi tcpdstport bi udpsrcport bi udpdstport bi"<br><br>
+and so on.  Each of the field designations must be taken from the left-hand column of <a href="https://scrub-tcpdump.sourceforge.net/docs.php#table2">Table 2</a>
+below.  The function names must be taken from <a href="https://scrub-tcpdump.sourceforge.net/docs.php#table3">Table 3</a> below.  It is up to the
+user to ensure that the combination of field and function makes sense (i.e. that you do not attempt to use
+bilateral classification on an IP address or prefix-preserving pseudonymization on a timestamp, etc) - pairings
+that the system supports (although errors will be silently accepted by the system with undefined and probably
+nefarious effects) are listed in <a href="https://scrub-tcpdump.sourceforge.net/docs.php#table1">Table 1</a>.
+</p> 
+<p>
+Below you will find a table of all of the fields that scrub-tcpdump anonymizes and the methods that can
+be used to anonymize that field.  After that will be a description of how to specify those options to
+the tool on the command line.
+</p>
+<a name="table1"></a>
+<table border="1">
+  <tbody><tr>
+    <th colspan="2"><h3>Tabel 1: Packet Fields and Corresponding SCRUB-tcpdump Anonymization Options</h3></th>
+  </tr>
+  <tr>
+    <th>Field</th>     <th>Anonymizing Options</th>
+  </tr>
+  <tr>
+    <td>Fragmentation Flag — 3 bit Network-layer field.</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#ra">Pure random permutation</a></li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>IP address — 32-bit Network-layer field<br>(source and destination may be specified independently)</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+		<li><a href="#ra">Pure random permutation</a></li>
+		<li><a href="#rp">Keyed random permutation</a></li>
+		<li><a href="#pp">Prefix-preserving pseudonymization</a></li>
+		<li><a href="#tr">Truncation</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Payload — 0-variable bits Transport-layer field</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#sbm">Selective black marker</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Port — 16-bit Transport-layer field<br>(TCP and UDP/source and destination - each selected independently)</td>
+    <td>
+        <ul>
+          <li><a href="#bm">Black marker</a></li>
+          <li><a href="#ra">Pure random permutation</a></li>
+	      <li><a href="#rp">Keyed random permutation</a></li>
+	      <li><a href="#bi">Bilateral classification</a></li>
+        </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Sequence Number — 32-bit Transport-layer field</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#ra">Pure random permutation</a></li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+        <li><a href="#gr">Grouping</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>TCP Flags — 8-bits Transport-layer field<br>All flags, or each flag individually</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#gr">Grouping</a></li>
+        <li><a href="#ra">Pure random permutation</a></li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Time Stamp — pcap field</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#tua">Time unit annihilation</a></li>
+        <li><a href="#tr">Truncation</a></li>
+        <li><a href="#en">Enumeration</a></li>
+        <li><a href="#rts">Random time shift</a></li>
+        <li><a href="#ra">Pure random permutation</a></li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Time-to-Live — 8-bit Network-layer field</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#ra">Pure random permutation</a></li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+        <li><a href="#gr">Grouping</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Total packet length — 16-bit network layer AND pcap layer</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#ra">Pure random permutation</a></li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+        <li><a href="#gr">Grouping</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Transport Protocol Number Field — 8-bit Network-layer field</td>
+    <td>
+      <ul>
+        <li><a href="#bi">Bilateral classification</a>(sets TCP/UDP/ICMP to 253, all others to 254)</li>
+        <li><a href="#bm">Black Marker</a> (because 0 is an illegal value, sets all instances to 254)</li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+        <li><a href="#ra">Pure random permutation</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>Window Size — 16-bit transport layer</td>
+    <td>
+      <ul>
+        <li><a href="#bm">Black marker</a></li>
+        <li><a href="#ra">Pure random permuation</a></li>
+        <li><a href="#rp">Keyed random permutation</a></li>
+        <li><a href="#bi">Bilateral classification</a></li>
+      </ul>
+    </td>
+  </tr>
+</tbody></table>
+<p>
+The following table lists the fields and their field designations for use in the anonymization string
+for use with scrubtcpdump:
+</p>
+<a name="table2"></a>
+<table border="1">
+  <tbody><tr>
+    <th colspan="2">Table 2: Packet Field Entities and Corresponding SCRUB-tcpdump Parameter Strings</th>
+  </tr>
+  <tr>
+    <th>Packet Field Entities</th>  <th>SCRUB-tcpdump Parameter String Specifier</th>
+  </tr>
+  <tr>
+    <td>TCP Source port</td>
+    <td>tcpsrcport</td>
+  </tr>
+  <tr>
+    <td>UDP Source port</td>
+    <td>udpsrcport</td>
+  </tr>
+  <tr>
+    <td>TCP destination port</td>
+    <td>tcpdstport</td>
+  </tr>
+  <tr>
+    <td>UDP destination port</td>
+    <td>udpdstport</td>
+  </tr>
+  <tr>
+    <td>TCP Flags</td>
+    <td>tcpflags</td>
+  </tr>
+  <tr>
+    <td>Window Size</td>
+    <td>tcpwindow</td>
+  </tr>
+  <tr>
+    <td>Payload</td>
+    <td>payload</td>
+  </tr>
+  <tr>
+    <td>Source IP address</td>
+    <td>srcip</td>
+  </tr>
+  <tr>
+    <td>Desination IP address</td>
+    <td>dstip</td>
+  </tr>
+  <tr>
+    <td>Time To Live</td>
+    <td>ttl</td>
+  </tr>
+  <tr>
+    <td>Total packet length (IP field)</td>
+    <td>pktlen</td>
+  </tr>
+  <tr>
+    <td>Transport Protocol Number Field</td>
+    <td>transportprotocol</td>
+  </tr>
+  <tr>
+    <td>Fragmentation Flag</td>
+    <td>fragflags</td>
+  </tr>
+  <tr>
+    <td>Sequence Number</td>
+    <td>sequence</td>
+  </tr>
+  <tr>
+    <td>Timestamp</td>
+    <td>timestamp</td>
+  </tr>
+  <tr>
+    <td>IP Length</td>
+    <td>iplen</td>
+  </tr>
+  <tr>
+    <td>Total packet length (pcap field)</td>
+    <td>pktcaplen</td>
+  </tr>
+</tbody></table>
+<p>
+The following contains the names of the anonymization methods and their specifications for the anonymization string.  There is
+also a brief description of what that anonymization method does.
+</p>
+<a name="table3"></a>
+<table border="1">
+  <tbody><tr>
+    <th colspan="3">Table 3: SCRUB-tcpdump Anonymization Options with Parameters and Descriptions</th>
+  </tr>
+  <tr>
+    <th>Anonymization Options</th>   <th>Parameter String Specifier</th> <th>Description</th>
+  </tr>
+  <tr>
+    <td><a name="bi"></a>Bilateral classification</td>
+    <td>bi</td>
+    <td>This is used on TCP/UDP source fields and will classify all low ports to port 1 and all high ports to port
+        65535.  This is provided so that some information about whether the packet was bound for a low port (below 1024,
+	and therefore one of the 'well-known' ports) or a high port (above 1024, and thus bound for an 'unspecified' port)
+	was indicated by the original input.</td>
+  </tr>
+  <tr>
+    <td><a name="bm"></a>Black marker</td>
+    <td>bm</td>
+    <td>This sets the specified field to all 0's (or 255 in some cases) and effectively results in a complete loss of the
+        data that is in that field.</td>
+  </tr>
+  <tr>
+    <td><a name="en"></a>Enumeration</td>
+    <td>en</td>
+    <td>This will annihilate any sense of precision about the spacing of the values in the field, but will maintain the
+    	original order of items, separating all successive packets to the next available value for that field.  For example,
+    	when applied to the time-stamp fields, it will order the packets in its output according to their original timestamp,
+    	but they will start counting from 0, with the second packet as having been sent at 1 second, the next packet at
+    	2 seconds, etc.</td>
+  </tr>
+  <tr>
+    <td><a name="gr"></a>Grouping</td>
+    <td>grN</td>
+    <td>Grouping takes all possible values for a field, partitions them into a number of mutually exclusive, exhaustive
+    	partitions, and then selects a representative member of each partition to represent all occurrances of the members
+    	of that field.  For instance, if a field can take all values from 1-100, a possible partitioning scheme would be:
+    	[1-5], [6-15], [16-50], [51-100] with representative members {1, 6, 16, 51}.  Then, all values in the specified field
+    	which are in the range [1-5] would be replaced by {1} while all numbers in [6-15] are replaced by {6} and so on.  The
+    	set of ranges for each field are enumerated here, with the representative values following the set of ranges in
+    	curly braces:<br>
+    	<ul>
+    	  <li>Sequence Number: [0-2<sup>10</sup>], [2<sup>10</sup>+1-2<sup>20</sup>], [2<sup>20</sup>+1-2<sup>30</sup>], [2<sup>30</sup>+1-2<sup>32</sup>]</li>
+    	  <li>TCP Flags: [RST/SYN/FIN]=0, [URG/ACK/PSH]=0</li>
+    	  <li></li></ul></td>
+  </tr>
+  <tr>
+    <td><a name="rp"></a>Keyed randomization</td>
+    <td>rp</td>
+    <td>This will take a user-specified key and use that as the basis for a randomized permutation of the field.  The randomization
+        is reproduceable if the same key is specified a again.</td>
+  </tr>
+  <tr>
+    <td><a name="pp"></a>Prefix-preserving pseudonmymization</td>
+    <td>pp</td>
+    <td>This method will separately anonymize the subnet mask and the host portion of an IP address, using Ramasamy's TSA algorithm 
+        algoirthm, thus ensuring that all hosts in the same subnet in the source file are also mapped to the same subnet
+	in the resulting output, but it will, obviously, be a different subnet than the original input.</td>
+  </tr>
+  <tr>
+    <td><a name="ra"></a>Pure randomization</td>
+    <td>ra</td>
+    <td>This will map all input to a random value on output - however, all mappings of a given value X, which is randomly
+    	mapped to Y at its first encounter, will likewise be mapped to Y for the remainder of the file.  This is identical
+	to Random permutatin/keyed randomization above, but it is not reproduceable by the use of a key.</td>
+  </tr>
+  <tr>
+    <td><a name="rw"></a>Random uniform window</td>
+    <td>rwN,M</td>
+    <td>This will randomly assign the specified values of the field to a uniformly-distributed random value over the window
+    	[N:M]</td>
+  </tr>
+  <tr>
+    <td><a name="re"></a>Regex catchall</td>
+    <td>re</td>
+    <td>This will eliminate all hostnames and URLs from the payload of any TCP and UDP packets.</td>
+  </tr>
+  <tr>
+    <td><a name="tr"></a>Truncation</td>
+    <td>trN</td>
+    <td>The N in trN is actually a number, and it specifies the number of bits to be truncated (by being set to 0) from
+    	all elements in this field.</td>
+  </tr>
+</tbody></table>
+<a name="followstable3"></a>
+        
+        
+     
+  
+</body></html>
