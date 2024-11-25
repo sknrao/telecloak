@@ -9,7 +9,7 @@ COPY . .
 
 CMD ["python", "app.py"]
 
-# docker build -t anonymizer-nlp .
+# docker build -t anonymizer-ae .
 # OR  docker build --no-cache -t anonymizer-ae .
 
 # docker run -it --rm --network thoth anonymizer-ae
