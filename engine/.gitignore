@@ -1,0 +1,6 @@
+./main.py.swp
+collector.log
+engine.log
+influxd.bolt
+postgres_public_devices.csv
+testfile.log
