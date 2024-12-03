@@ -15,7 +15,7 @@ def build_autoencoder(dim_input, dim_layer_1, dim_layer_2):
     x = Activation("relu")(x)
     output_layer = Dense(dim_input, activation='linear')(x)
 
-    encoder = Model(inputs=input_layer, outputs=bottleneck_layer)
+    encoder = Model(inputs=input_layer, outputs=bottleneck_layer)   
     autoencoder = Model(inputs=input_layer, outputs=output_layer)
     autoencoder.compile(optimizer='adam', loss='mse')
     return autoencoder, encoder
@@ -23,8 +23,6 @@ def build_autoencoder(dim_input, dim_layer_1, dim_layer_2):
 def anonymize_ae(df_path, model_path='./best_model.keras', weights_path='./best_model.weights.h5'):
     df = pd.read_csv(df_path)
     df.columns = df.columns.str.strip()
-    print("Columns:", df.columns)
-    print(df.head())
 
     numerical_cols = df.select_dtypes(include=['float64', 'int64']).columns
     scaler = MinMaxScaler()
@@ -53,3 +51,4 @@ def anonymize_ae(df_path, model_path='./best_model.keras', weights_path='./best_
 if __name__ == "__main__":
     anonymized_data = anonymize_ae('/home/mathelet/telecloak/anonymizers/aenon/CWRU_bearing.csv', model_path='./best_model.keras', weights_path='./best_model.weights.h5')
     anonymized_data.to_csv('anonymized_data.csv', index=False)
+        
